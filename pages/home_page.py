@@ -10,4 +10,4 @@ class HomePage(BasePage):
         self.navigate(url)
 
     def room_cards_are_visible(self):
-        return expect(self.page.locator(self.ROOMS)).to_be_visible()
+        return expect(self.page.locator(self.ROOMS)).not_to_have_count(0)

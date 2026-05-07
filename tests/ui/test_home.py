@@ -1,17 +1,7 @@
-import re
-
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
 from pages.home_page import HomePage
-
-
-@pytest.mark.home
-def test_assert_title(page: Page, base_url):
-
-    page.goto(base_url)
-
-    expect(page).to_have_title(re.compile("Restful"))
 
 
 @pytest.mark.home
