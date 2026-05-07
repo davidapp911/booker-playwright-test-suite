@@ -1,0 +1,12 @@
+test_plan.pdf
+development_phases.pdf
+.env
+__pycache__/
+*.pyc
+venv/
+.pytest_cache/
+playwright-report/
+test-results/
+report.html
+.DS_Store
+*.egg-info/
