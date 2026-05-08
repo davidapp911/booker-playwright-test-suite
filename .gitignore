@@ -10,3 +10,4 @@ test-results/
 report.html
 .DS_Store
 *.egg-info/
+.vscode
