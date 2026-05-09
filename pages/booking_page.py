@@ -19,3 +19,12 @@ class BookingPage(BasePage):
 
     def confirmation_is_visible(self):
         expect(self.page.get_by_role("heading", name="Booking Confirmed")).to_be_visible()
+
+    def confirmation_is_not_visible(self):
+        expect(self.page.get_by_role("heading", name="Booking Confirmed")).not_to_be_visible()
+
+    def alert_is_visible(self):
+        expect(self.page.get_by_role("alert")).to_be_visible()
+
+    def load_error_is_visible(self):
+        expect(self.page.get_by_role("heading", name="This page couldn’t load")).to_be_visible()

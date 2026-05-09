@@ -11,3 +11,4 @@ report.html
 .DS_Store
 *.egg-info/
 .vscode
+pyrightconfig.json
