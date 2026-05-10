@@ -20,5 +20,17 @@ def force_length(func, min: int, max: int):
             return func_output
 
 
-def date_generator_from_today(offset: int = 0):
+def dategen_today(offset: int = 0):
     return str(date.today() + timedelta(days=offset))
+
+
+def room_data_generator():
+    return {
+        "roomName": "123",
+        "type": "Twin",
+        "accessible": "true",
+        "image": "https://blog.postman.com/wp-content/uploads/2014/07/logo.png",
+        "description": "This is the test room 123. Stay out of here",
+        "roomPrice": 999,
+        "features": ["WiFi", "Safe"],
+    }

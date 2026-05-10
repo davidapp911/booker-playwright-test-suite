@@ -29,4 +29,5 @@ testpaths = ["tests"]
 markers = [
     "home: tests related to the home page",
     "booking: tests related to the booking pages",
+    "admin: tests related to the admin pages",
 ]
