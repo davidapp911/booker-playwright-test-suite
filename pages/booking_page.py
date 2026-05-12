@@ -1,5 +1,3 @@
-from playwright.sync_api import expect
-
 from pages.base_page import BasePage
 
 
@@ -17,14 +15,11 @@ class BookingPage(BasePage):
         self.page.get_by_role("textbox", name="Email").fill(email)
         self.page.get_by_role("textbox", name="Phone").fill(phone)
 
-    def confirmation_is_visible(self):
-        expect(self.page.get_by_role("heading", name="Booking Confirmed")).to_be_visible()
+    def confirmation(self):
+        return self.page.get_by_role("heading", name="Booking Confirmed")
 
-    def confirmation_is_not_visible(self):
-        expect(self.page.get_by_role("heading", name="Booking Confirmed")).not_to_be_visible()
+    def empty_field_alert(self):
+        return self.page.get_by_role("alert").filter(has_text="Lastname should not be")
 
-    def alert_is_visible(self):
-        expect(self.page.get_by_role("alert").filter(has_text="Lastname should not be")).to_be_visible()
-
-    def load_error_is_visible(self):
-        expect(self.page.get_by_role("heading", name="This page couldn’t load")).to_be_visible()
+    def load_error(self):
+        return self.page.get_by_role("heading", name="This page couldn’t load")

@@ -1,5 +1,5 @@
 import pytest
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from helpers import apply_field_rules, fake_contact
 from pages.contact_page import ContactPage
@@ -13,7 +13,7 @@ def test_valid_contact_form(page: Page, base_url):
     page_obj.load_contact_page(base_url)
     page_obj.fill_contact_form(**contact_data)
     page_obj.submit_contact_form()
-    page_obj.success_message_is_visible()
+    expect(page_obj.success_message()).to_be_visible()
 
 
 @pytest.mark.contact
@@ -24,4 +24,4 @@ def test_missing_required_field(page: Page, base_url, case):
     page_obj.load_contact_page(base_url)
     page_obj.fill_contact_form(**contact_data)
     page_obj.submit_contact_form()
-    page_obj.missing_field_alert_is_visible(case["expected_error"])
+    expect(page_obj.missing_field_alert(case["expected_error"])).to_be_visible()

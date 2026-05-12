@@ -1,5 +1,5 @@
 import pytest
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from pages.home_page import HomePage
 
@@ -9,4 +9,4 @@ def test_rooms_are_visible(page: Page, base_url):
 
     page_obj = HomePage(page)
     page_obj.navigate(base_url)
-    page_obj.room_cards_are_visible()
+    expect(page_obj.room_cards()).not_to_have_count(0)
