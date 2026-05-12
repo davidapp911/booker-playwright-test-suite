@@ -3,28 +3,20 @@ from datetime import date, timedelta
 from faker import Faker
 
 
-def person_generator():
-    faker = Faker()
+def fake_booking():
+    fake = Faker()
     return {
-        "first_name": faker.first_name(),
-        "last_name": faker.last_name(),
-        "email": faker.email(),
-        "phone": faker.numerify("###########"),
+        "roomid": 1,
+        "firstname": bounded(fake.first_name, 3, 21),
+        "lastname": bounded(fake.last_name, 3, 21),
+        "depositpaid": "true",
+        "email": fake.email(),
+        "phone": fake.numerify("###############"),
+        "bookingdates": {"checkin": relative_date(), "checkout": relative_date(5)},
     }
 
 
-def force_length(func, min: int, max: int):
-    while True:
-        func_output = func()
-        if min <= len(func_output) <= max:
-            return func_output
-
-
-def dategen_today(offset: int = 0):
-    return str(date.today() + timedelta(days=offset))
-
-
-def room_data_generator():
+def fake_room() -> dict:
     return {
         "roomName": "123",
         "type": "Twin",
@@ -34,3 +26,30 @@ def room_data_generator():
         "roomPrice": 999,
         "features": ["WiFi", "Safe"],
     }
+
+
+def fake_contact() -> dict:
+    fake = Faker()
+
+    return {
+        "name": bounded(fake.name, 10, 30),
+        "email": fake.email(),
+        "phone": fake.numerify("###############"),
+        "subject": "Inquiry about a room",
+        "description": "Hey is room 123 available. It's my lucky number",
+    }
+
+
+def bounded(func, min: int, max: int):
+    while True:
+        func_output = func()
+        if min <= len(func_output) <= max:
+            return func_output
+
+
+def relative_date(offset: int = 0):
+    return str(date.today() + timedelta(days=offset))
+
+
+def apply_field_rules(data: dict, exclude: list[str] = [], missing: list[str] = []) -> dict:
+    return {k: ("" if k in missing else v) for k, v in data.items() if k not in exclude}

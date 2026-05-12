@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import Page
 
-from helpers import room_data_generator
+from helpers import apply_field_rules, fake_room
 from pages.admin_page import AdminPage
 
 
@@ -25,18 +25,16 @@ def test_invalid_admin_login(page: Page, base_url, username):
 
 @pytest.mark.admin
 def test_create_new_room(page: Page, base_url, username, password, delete_room_after):
-    data = room_data_generator()
-    delete_room_after(data["roomName"])
+    room_data = apply_field_rules(fake_room(), exclude=["image", "description"])
+    delete_room_after(room_data["roomName"])
 
     page_obj = AdminPage(page)
     page_obj.load_admin_page(base_url)
     page_obj.fill_login_form(username, password)
     page_obj.submit_login()
-    page_obj.fill_room_form(
-        data["roomName"], data["type"], data["accessible"], str(data["roomPrice"]), data["features"]
-    )
+    page_obj.fill_room_form(**room_data)
     page_obj.submit_new_room()
-    page_obj.new_room_is_created(str(data["roomPrice"]))
+    page_obj.new_room_is_created(str(room_data["roomPrice"]))
 
 
 @pytest.mark.admin

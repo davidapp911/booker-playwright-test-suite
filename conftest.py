@@ -4,7 +4,7 @@ import httpx
 import pytest
 from dotenv import load_dotenv
 
-from helpers import room_data_generator
+from helpers import fake_room
 
 
 @pytest.fixture(scope="session")
@@ -28,7 +28,9 @@ def password():
 @pytest.fixture(scope="session")
 def auth_token(base_url, username, password):
 
-    response = httpx.post(f"{base_url}api/auth/login", json={"username": username, "password": password})
+    response = httpx.post(
+        f"{base_url}api/auth/login", json={"username": username, "password": password}
+    )
     return response.json()["token"]
 
 
@@ -43,19 +45,24 @@ def delete_room_after(base_url, auth_token):
     yield _set_room
 
     rooms = httpx.get(f"{base_url}api/room").json()["rooms"]
-    room_id = next((r["roomid"] for r in rooms if str(r["roomName"]) == str(room_name)), None)
+    room_id = next(
+        (r["roomid"] for r in rooms if str(r["roomName"]) == str(room_name)), None
+    )
     if room_id:
         httpx.delete(f"{base_url}api/room/{room_id}", cookies={"token": auth_token})
 
 
 @pytest.fixture()
 def create_room(base_url, auth_token):
-    data = room_data_generator()
+    data = fake_room()
     httpx.post(f"{base_url}api/room", json=data, cookies={"token": auth_token})
 
     yield data["roomName"]
 
     rooms = httpx.get(f"{base_url}api/room").json()["rooms"]
-    room_id = next((r["roomid"] for r in rooms if str(r["roomName"]) == str(data["roomName"])), None)
+    room_id = next(
+        (r["roomid"] for r in rooms if str(r["roomName"]) == str(data["roomName"])),
+        None,
+    )
     if room_id:
         httpx.delete(f"{base_url}api/room/{room_id}", cookies={"token": auth_token})

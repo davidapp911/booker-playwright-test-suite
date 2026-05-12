@@ -24,11 +24,18 @@ class AdminPage(BasePage):
     def invalid_login_alert_is_visible(self):
         expect(self.page.get_by_text("Invalid credentials")).to_be_visible()
 
-    def fill_room_form(self, room_number: str, room_type: str, accessible: str, price: str, features: list[str]):
-        self.page.get_by_test_id("roomName").fill(room_number)
-        self.page.locator("#type").select_option(room_type)
+    def fill_room_form(
+        self,
+        roomName: str,
+        type: str,
+        accessible: str,
+        roomPrice: int,
+        features: list[str],
+    ):
+        self.page.get_by_test_id("roomName").fill(roomName)
+        self.page.locator("#type").select_option(type)
         self.page.locator("#accessible").select_option(accessible)
-        self.page.locator("#roomPrice").fill(price)
+        self.page.locator("#roomPrice").fill(str(roomPrice))
 
         for feature in features:
             self.page.get_by_role("checkbox", name=feature).check()
@@ -46,9 +53,7 @@ class AdminPage(BasePage):
         self.page.get_by_role("button", name="Edit").click()
 
     def change_room_price(self, new_price: str):
-        field = self.page.get_by_role("textbox", name="Room price:")
-        field.clear()
-        field.fill(new_price)
+        self.page.get_by_role("textbox", name="Room price:").fill(new_price)
 
     def click_update_button(self):
         with self.page.expect_response("**/api/room/**"):

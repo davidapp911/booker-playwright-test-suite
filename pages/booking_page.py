@@ -11,9 +11,9 @@ class BookingPage(BasePage):
     def click_reserve_now(self):
         self.page.get_by_role("button", name="Reserve Now").click()
 
-    def fill_reservation_form(self, first_name: str, last_name: str, email: str, phone: str):
-        self.page.get_by_role("textbox", name="Firstname").fill(first_name)
-        self.page.get_by_role("textbox", name="Lastname").fill(last_name)
+    def fill_reservation_form(self, firstname: str, lastname: str, email: str, phone: str):
+        self.page.get_by_role("textbox", name="Firstname").fill(firstname)
+        self.page.get_by_role("textbox", name="Lastname").fill(lastname)
         self.page.get_by_role("textbox", name="Email").fill(email)
         self.page.get_by_role("textbox", name="Phone").fill(phone)
 
@@ -24,7 +24,7 @@ class BookingPage(BasePage):
         expect(self.page.get_by_role("heading", name="Booking Confirmed")).not_to_be_visible()
 
     def alert_is_visible(self):
-        expect(self.page.get_by_role("alert")).to_be_visible()
+        expect(self.page.get_by_role("alert").filter(has_text="Lastname should not be")).to_be_visible()
 
     def load_error_is_visible(self):
         expect(self.page.get_by_role("heading", name="This page couldn’t load")).to_be_visible()
