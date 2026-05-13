@@ -6,11 +6,11 @@ from pages.booking_page import BookingPage
 
 
 @pytest.mark.booking
-def test_create_reservation(page: Page, base_url):
+def test_create_reservation(page: Page, base_url, create_room):
     page_obj = BookingPage(page)
     booking_data = apply_field_rules(fake_booking(), exclude=["roomid", "depositpaid", "bookingdates"])
 
-    page_obj.load_room_booking(base_url, 1, relative_date(), relative_date(2))
+    page_obj.load_room_booking(base_url, create_room["id"], relative_date(), relative_date(2))
     page_obj.click_reserve_now()
     page_obj.fill_reservation_form(**booking_data)
     page_obj.click_reserve_now()

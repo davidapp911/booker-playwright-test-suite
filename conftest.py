@@ -28,9 +28,7 @@ def password():
 @pytest.fixture(scope="session")
 def auth_token(base_url, username, password):
 
-    response = httpx.post(
-        f"{base_url}api/auth/login", json={"username": username, "password": password}
-    )
+    response = httpx.post(f"{base_url}api/auth/login", json={"username": username, "password": password}, timeout=30)
     return response.json()["token"]
 
 
@@ -44,25 +42,24 @@ def delete_room_after(base_url, auth_token):
 
     yield _set_room
 
-    rooms = httpx.get(f"{base_url}api/room").json()["rooms"]
-    room_id = next(
-        (r["roomid"] for r in rooms if str(r["roomName"]) == str(room_name)), None
-    )
+    rooms = httpx.get(f"{base_url}api/room", timeout=30).json()["rooms"]
+    room_id = next((r["roomid"] for r in rooms if str(r["roomName"]) == str(room_name)), None)
     if room_id:
-        httpx.delete(f"{base_url}api/room/{room_id}", cookies={"token": auth_token})
+        httpx.delete(f"{base_url}api/room/{room_id}", cookies={"token": auth_token}, timeout=30)
 
 
 @pytest.fixture()
 def create_room(base_url, auth_token):
     data = fake_room()
-    httpx.post(f"{base_url}api/room", json=data, cookies={"token": auth_token})
+    httpx.post(f"{base_url}api/room", json=data, cookies={"token": auth_token}, timeout=30)
 
-    yield data["roomName"]
-
-    rooms = httpx.get(f"{base_url}api/room").json()["rooms"]
+    rooms = httpx.get(f"{base_url}api/room", timeout=30).json()["rooms"]
     room_id = next(
         (r["roomid"] for r in rooms if str(r["roomName"]) == str(data["roomName"])),
         None,
     )
+
+    yield {"id": room_id, "name": data["roomName"]}
+
     if room_id:
-        httpx.delete(f"{base_url}api/room/{room_id}", cookies={"token": auth_token})
+        httpx.delete(f"{base_url}api/room/{room_id}", cookies={"token": auth_token}, timeout=30)

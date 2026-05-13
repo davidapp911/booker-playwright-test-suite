@@ -1,3 +1,5 @@
+from playwright.sync_api import expect
+
 from pages.base_page import BasePage
 
 
@@ -11,6 +13,7 @@ class AdminPage(BasePage):
 
     def submit_login(self):
         self.page.get_by_role("button", name="Login").click()
+        self.page.wait_for_url("**/admin**")
 
     def login(self, username, password):
         self.fill_login_form(username, password)
@@ -44,18 +47,18 @@ class AdminPage(BasePage):
     def new_room_created(self, room_number: str):
         return self.page.get_by_text(room_number)
 
-    def click_room_entry(self, room_number: str):
-        self.page.get_by_text(room_number).click()
+    def open_room_page(self, room_name: str):
+        self.page.locator('[data-testid="roomlisting"]').filter(has=self.page.locator(f"#roomName{room_name}")).click()
 
     def click_edit_button(self):
         self.page.get_by_role("button", name="Edit").click()
 
     def change_room_price(self, new_price: str):
+        expect(self.page.get_by_role("textbox", name="Room price:")).not_to_be_empty()
         self.page.get_by_role("textbox", name="Room price:").fill(new_price)
 
     def click_update_button(self):
-        with self.page.expect_response("**/api/room/**"):
-            self.page.get_by_role("button", name="Update").click()
+        self.page.get_by_role("button", name="Update").click()
 
     def room_price(self):
         return self.page.get_by_text("Room price:")
@@ -64,4 +67,4 @@ class AdminPage(BasePage):
         self.page.locator('[data-testid="roomlisting"]').filter(has_text=room_number).locator("span.roomDelete").click()
 
     def room_to_delete(self, room_number):
-        return self.page.locator(f"roomName{room_number}")
+        return self.page.locator(f"#roomName{room_number}")

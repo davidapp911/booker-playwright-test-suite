@@ -17,15 +17,22 @@ def fake_booking():
 
 
 def fake_room() -> dict:
+    fake = Faker()
+    room_type = ["Single", "Twin", "Double", "Family", "Suite"]
+    features = ["WiFi", "TV", "Radio", "Refreshments", "Safe", "Views"]
     return {
-        "roomName": "123",
-        "type": "Twin",
-        "accessible": "true",
+        "roomName": fake.numerify("###"),
+        "type": fake.random_element(room_type),
+        "accessible": str(fake.boolean()).lower(),
         "image": "https://blog.postman.com/wp-content/uploads/2014/07/logo.png",
-        "description": "This is the test room 123. Stay out of here",
-        "roomPrice": 999,
-        "features": ["WiFi", "Safe"],
+        "description": "This is a test room. Stay out of here",
+        "roomPrice": fake_price(),
+        "features": fake.random_elements(features, unique=True),
     }
+
+
+def fake_price() -> int:
+    return Faker().random_int(min=1, max=999)
 
 
 def fake_contact() -> dict:

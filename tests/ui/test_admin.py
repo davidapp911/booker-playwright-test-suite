@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import Page, expect
 
-from helpers import apply_field_rules, fake_room
+from helpers import apply_field_rules, fake_price, fake_room
 from pages.admin_page import AdminPage
 
 
@@ -39,11 +39,11 @@ def test_create_new_room(page: Page, base_url, username, password, delete_room_a
 
 @pytest.mark.admin
 def test_edit_room_price(page: Page, base_url, username, password, create_room):
-    new_price = "220"
+    new_price = str(fake_price())
     page_obj = AdminPage(page)
     page_obj.load_admin_page(base_url)
     page_obj.login(username, password)
-    page_obj.click_room_entry(create_room)
+    page_obj.open_room_page(create_room["name"])
     page_obj.click_edit_button()
     page_obj.change_room_price(new_price)
     page_obj.click_update_button()
@@ -55,5 +55,5 @@ def test_delete_room(page: Page, base_url, username, password, create_room):
     page_obj = AdminPage(page)
     page_obj.load_admin_page(base_url)
     page_obj.login(username, password)
-    page_obj.delete_room(create_room)
-    expect(page_obj.room_to_delete(create_room)).not_to_be_visible()
+    page_obj.delete_room(create_room["name"])
+    expect(page_obj.room_to_delete(create_room["name"])).not_to_be_visible()
