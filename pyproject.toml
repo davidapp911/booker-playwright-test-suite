@@ -19,6 +19,9 @@ dev = [
     "ruff",
 ]
 
+[tool.setuptools]
+packages = []
+
 [tool.playwright]
 expect_timeout = 10000
 
