@@ -2,8 +2,8 @@ from pages.base_page import BasePage
 
 
 class ContactPage(BasePage):
-    def load_contact_page(self, base_url):
-        self.navigate(f"{base_url}#contact")
+    def load_contact_page(self, base_url: str):
+        self.navigate(f"{base_url}/#contact")
 
     def fill_contact_form(self, name: str, email: str, phone: str, subject: str, description: str):
         self.page.get_by_test_id("ContactName").fill(name)

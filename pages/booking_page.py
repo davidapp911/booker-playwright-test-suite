@@ -2,8 +2,8 @@ from pages.base_page import BasePage
 
 
 class BookingPage(BasePage):
-    def load_room_booking(self, base_url, room_id: int, check_in: str, check_out: str):
-        url = f"{base_url}reservation/{room_id}?checkin={check_in}&checkout={check_out}"
+    def load_room_booking(self, base_url: str, room_id: int, check_in: str, check_out: str):
+        url = f"{base_url}/reservation/{room_id}?checkin={check_in}&checkout={check_out}"
         self.navigate(url)
 
     def click_reserve_now(self):

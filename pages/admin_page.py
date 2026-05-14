@@ -4,8 +4,8 @@ from pages.base_page import BasePage
 
 
 class AdminPage(BasePage):
-    def load_admin_page(self, base_url):
-        self.navigate(f"{base_url}admin")
+    def load_admin_page(self, base_url: str):
+        self.navigate(f"{base_url}/admin")
 
     def fill_login_form(self, username: str, password: str):
         self.page.get_by_role("textbox", name="Username").fill(username)

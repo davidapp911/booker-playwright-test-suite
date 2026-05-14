@@ -24,7 +24,7 @@ expect_timeout = 10000
 
 [tool.pytest.ini_options]
 pythonpath=["."]
-addopts = "--screenshot=only-on-failure --tracing=retain-on-failure --html=report.html --self-contained-html"
+addopts = "--import-mode=importlib --screenshot=only-on-failure --tracing=retain-on-failure --html=report.html --self-contained-html"
 testpaths = ["tests"]
 markers = [
     "home: tests related to the home page",
