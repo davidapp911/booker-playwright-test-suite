@@ -12,6 +12,7 @@ dependencies = [
     "Faker",
     "pytest-html",
     "pytest-check",
+    "pytest-repeat",
 ]
 
 [project.optional-dependencies]
