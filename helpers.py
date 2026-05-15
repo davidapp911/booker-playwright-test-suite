@@ -58,5 +58,7 @@ def relative_date(offset: int = 0):
     return str(date.today() + timedelta(days=offset))
 
 
-def apply_field_rules(data: dict, exclude: list[str] = [], missing: list[str] = []) -> dict:
+def apply_field_rules(
+    data: dict, exclude: list[str] = [], missing: list[str] = []
+) -> dict:
     return {k: ("" if k in missing else v) for k, v in data.items() if k not in exclude}

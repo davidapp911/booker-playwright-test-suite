@@ -36,4 +36,5 @@ markers = [
     "admin: tests related to the admin page",
     "contact: tests related to the contact page",
     "auth: tests related to authentication api route",
+    "booking_api: tests related to booking api",
 ]
