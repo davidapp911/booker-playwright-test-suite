@@ -20,5 +20,5 @@ class BookerClient:
     def delete(self, path: str, **kwargs) -> httpx.Response:
         return self._client.delete(path, **kwargs)
 
-    def set_cookie(self, name: str, value):
+    def set_cookie(self, name: str, value: str) -> None:
         self._client.cookies.set(name, value)

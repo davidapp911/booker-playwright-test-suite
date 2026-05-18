@@ -5,5 +5,5 @@ class BasePage:
     def __init__(self, page: Page):
         self.page = page
 
-    def navigate(self, path):
+    def navigate(self, path: str) -> None:
         self.page.goto(path)

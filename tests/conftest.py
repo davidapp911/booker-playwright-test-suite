@@ -1,4 +1,6 @@
 import os
+from collections.abc import Callable, Generator
+from typing import Any
 
 import pytest
 from dotenv import load_dotenv
@@ -6,30 +8,34 @@ from dotenv import load_dotenv
 from api.client import BookerClient
 from helpers import fake_booking, fake_room
 
-
-@pytest.fixture(scope="session", autouse=True)
-def load_env():
-    load_dotenv()
+load_dotenv()
 
 
 @pytest.fixture(scope="session")
-def base_url():
-    return os.getenv("BASE_URL")
+def base_url() -> str:
+    url = os.getenv("BASE_URL")
+    if not url:
+        raise RuntimeError("BASE_URL not set in environment")
+    return url
 
 
 # --------> authentication
 @pytest.fixture(scope="session")
-def credentials():
-    return {"username": os.getenv("ADMIN_USERNAME"), "password": os.getenv("ADMIN_PASSWORD")}
+def credentials() -> dict[str, str]:
+    username = os.getenv("ADMIN_USERNAME")
+    password = os.getenv("ADMIN_PASSWORD")
+    if not username or not password:
+        raise RuntimeError("ADMIN_USERNAME or ADMIN_PASSWORD not set in environment")
+    return {"username": username, "password": password}
 
 
 @pytest.fixture(scope="session")
-def client(base_url):
+def client(base_url) -> BookerClient:
     return BookerClient(base_url)
 
 
 @pytest.fixture(scope="session")
-def auth_client(client, credentials):
+def auth_client(client, credentials) -> Generator[BookerClient, None, None]:
     response = client.post("/api/auth/login", json=credentials)
     token_is_valid = client.post("/api/auth/validate", json=response.json()).json()["valid"]
 
@@ -45,7 +51,7 @@ def auth_client(client, credentials):
 
 # --------> booking
 @pytest.fixture()
-def created_booking(auth_client, delete_message):
+def created_booking(auth_client, delete_message) -> Generator[int, None, None]:
     booking = fake_booking()
     delete_message(f"{booking['firstname']} {booking['lastname']}")
     booking_id = auth_client.post("/api/booking", json=booking).json()["bookingid"]
@@ -57,7 +63,7 @@ def created_booking(auth_client, delete_message):
 
 
 @pytest.fixture()
-def delete_booking_by_id(auth_client):
+def delete_booking_by_id(auth_client) -> Generator[Callable[[int], None], None, None]:
     booking_id = None
 
     def _set_booking_id(id):
@@ -71,7 +77,7 @@ def delete_booking_by_id(auth_client):
 
 
 @pytest.fixture()
-def delete_booking_by_room_id(auth_client):
+def delete_booking_by_room_id(auth_client) -> Generator[Callable[[int], None], None, None]:
     room_id = None
 
     def _set_room_id(id):
@@ -89,7 +95,7 @@ def delete_booking_by_room_id(auth_client):
 
 # --------> rooms
 @pytest.fixture()
-def created_room(auth_client):
+def created_room(auth_client) -> Generator[dict[str, Any], None, None]:
     data = fake_room()
     auth_client.post("/api/room", json=data)
 
@@ -106,7 +112,7 @@ def created_room(auth_client):
 
 
 @pytest.fixture()
-def delete_room(auth_client):
+def delete_room(auth_client) -> Generator[Callable[[str], None], None, None]:
     room_name = None
 
     def _set_room(name):
@@ -124,7 +130,7 @@ def delete_room(auth_client):
 
 # -----------> messages
 @pytest.fixture()
-def delete_message(auth_client):
+def delete_message(auth_client) -> Generator[Callable[[str], None], None, None]:
     message_name = None
 
     def _set_name(name):

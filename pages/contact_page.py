@@ -1,22 +1,24 @@
+from playwright.sync_api import Locator
+
 from pages.base_page import BasePage
 
 
 class ContactPage(BasePage):
-    def load_contact_page(self, base_url: str):
+    def load_contact_page(self, base_url: str) -> None:
         self.navigate(f"{base_url}/#contact")
 
-    def fill_contact_form(self, name: str, email: str, phone: str, subject: str, description: str):
+    def fill_contact_form(self, name: str, email: str, phone: str, subject: str, description: str) -> None:
         self.page.get_by_test_id("ContactName").fill(name)
         self.page.get_by_test_id("ContactEmail").fill(email)
         self.page.get_by_test_id("ContactPhone").fill(phone)
         self.page.get_by_test_id("ContactSubject").fill(subject)
         self.page.get_by_test_id("ContactDescription").fill(description)
 
-    def submit_contact_form(self):
+    def submit_contact_form(self) -> None:
         self.page.get_by_role("button", name="Submit").click()
 
-    def success_message(self):
+    def success_message(self) -> Locator:
         return self.page.get_by_role("heading", name="Thanks for getting in touch")
 
-    def missing_field_alert(self, expected_alert):
+    def missing_field_alert(self, expected_alert: str) -> Locator:
         return self.page.get_by_text(expected_alert)
