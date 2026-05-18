@@ -21,3 +21,8 @@ class BookingResponse(BaseModel):
 
 class BookingListResponse(BaseModel):
     bookings: list[BookingResponse]
+
+
+class BookingUpdateResponse(BaseModel):
+    bookingid: int
+    booking: BookingResponse

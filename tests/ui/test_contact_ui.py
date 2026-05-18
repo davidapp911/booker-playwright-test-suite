@@ -7,8 +7,9 @@ from tests.ui.data.contact_page_cases import MISSING_FIELD
 
 
 @pytest.mark.contact
-def test_valid_contact_form(page: Page, base_url):
+def test_valid_contact_form(page: Page, base_url, delete_message):
     contact_data = fake_contact()
+    delete_message(contact_data["name"])
     page_obj = ContactPage(page)
     page_obj.load_contact_page(base_url)
     page_obj.fill_contact_form(**contact_data)

@@ -1,16 +1,17 @@
 import pytest
 from playwright.sync_api import Page, expect
 
-from helpers import apply_field_rules, fake_booking, relative_date
+from helpers import apply_field_rules, fake_booking, fake_booking_dates, relative_date
 from pages.booking_page import BookingPage
 
 
 @pytest.mark.booking
-def test_create_reservation(page: Page, base_url, create_room):
-    page_obj = BookingPage(page)
+def test_create_reservation(page: Page, base_url, created_room, delete_booking_by_room_id, delete_message):
     booking_data = apply_field_rules(fake_booking(), exclude=["roomid", "depositpaid", "bookingdates"])
-
-    page_obj.load_room_booking(base_url, create_room["id"], relative_date(), relative_date(2))
+    delete_booking_by_room_id(created_room["id"])
+    delete_message(f"{booking_data['firstname']} {booking_data['lastname']}")
+    page_obj = BookingPage(page)
+    page_obj.load_room_booking(base_url, created_room["id"], **fake_booking_dates())
     page_obj.click_reserve_now()
     page_obj.fill_reservation_form(**booking_data)
     page_obj.click_reserve_now()
@@ -21,7 +22,7 @@ def test_create_reservation(page: Page, base_url, create_room):
 def test_submit_empty_form(page: Page, base_url):
     page_obj = BookingPage(page)
 
-    page_obj.load_room_booking(base_url, 1, relative_date(), relative_date(2))
+    page_obj.load_room_booking(base_url, 1, **fake_booking_dates())
     page_obj.click_reserve_now()
     page_obj.click_reserve_now()
     expect(page_obj.empty_field_alert()).to_be_visible()
@@ -65,7 +66,7 @@ def test_booking_not_reaching_server(page: Page, base_url):
 
     booking_data = apply_field_rules(fake_booking(), exclude=["roomid", "depositpaid", "bookingdates"])
     page_obj = BookingPage(page)
-    page_obj.load_room_booking(base_url, 1, relative_date(), relative_date(2))
+    page_obj.load_room_booking(base_url, 1, **fake_booking_dates())
     page_obj.click_reserve_now()
     page_obj.fill_reservation_form(**booking_data)
     page_obj.click_reserve_now()

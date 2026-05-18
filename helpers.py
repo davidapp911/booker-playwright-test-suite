@@ -9,10 +9,20 @@ def fake_booking():
         "roomid": 1,
         "firstname": bounded(fake.first_name, 3, 21),
         "lastname": bounded(fake.last_name, 3, 21),
-        "depositpaid": "true",
+        "depositpaid": str(fake.boolean()).lower(),
         "email": fake.email(),
         "phone": fake.numerify("###############"),
-        "bookingdates": {"checkin": relative_date(), "checkout": relative_date(5)},
+        "bookingdates": fake_booking_dates(),
+    }
+
+
+def fake_booking_dates():
+    fake = Faker()
+    random_offset = fake.random_int(min=365, max=1000)
+    random_booking_lenght = fake.random_int(min=1, max=5)
+    return {
+        "checkin": relative_date(random_offset),
+        "checkout": relative_date(random_offset + random_booking_lenght),
     }
 
 
@@ -58,7 +68,5 @@ def relative_date(offset: int = 0):
     return str(date.today() + timedelta(days=offset))
 
 
-def apply_field_rules(
-    data: dict, exclude: list[str] = [], missing: list[str] = []
-) -> dict:
+def apply_field_rules(data: dict, exclude: list[str] = [], missing: list[str] = []) -> dict:
     return {k: ("" if k in missing else v) for k, v in data.items() if k not in exclude}
