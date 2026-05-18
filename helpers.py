@@ -18,13 +18,13 @@ def fake_booking() -> dict[str, Any]:
     }
 
 
-def fake_booking_dates() -> dict[str, Any]:
+def fake_booking_dates(offset: int = 0, length: int = 0) -> dict[str, Any]:
     fake = Faker()
-    random_offset = fake.random_int(min=365, max=1000)
-    random_booking_lenght = fake.random_int(min=1, max=5)
+    date_offset = offset if offset != 0 else fake.random_int(min=365, max=1000)
+    booking_length = length if length != 0 else fake.random_int(min=1, max=5)
     return {
-        "checkin": relative_date(random_offset),
-        "checkout": relative_date(random_offset + random_booking_lenght),
+        "checkin": relative_date(date_offset),
+        "checkout": relative_date(date_offset + booking_length),
     }
 
 
@@ -45,6 +45,10 @@ def fake_room() -> dict[str, Any]:
 
 def fake_price() -> int:
     return Faker().random_int(min=1, max=999)
+
+
+def fake_id_num() -> int:
+    return Faker().random_int(min=99999, max=999999)
 
 
 def fake_contact() -> dict[str, Any]:

@@ -35,7 +35,8 @@ def client(base_url) -> BookerClient:
 
 
 @pytest.fixture(scope="session")
-def auth_client(client, credentials) -> Generator[BookerClient, None, None]:
+def auth_client(base_url, credentials) -> Generator[BookerClient, None, None]:
+    client = BookerClient(base_url)
     response = client.post("/api/auth/login", json=credentials)
     token_is_valid = client.post("/api/auth/validate", json=response.json()).json()["valid"]
 
@@ -58,7 +59,9 @@ def created_booking(auth_client, delete_message) -> Generator[int, None, None]:
 
     yield booking_id
 
-    if booking_id:
+    response = auth_client.get(f"/api/booking/{booking_id}")
+
+    if response.status_code == 200:
         auth_client.delete(f"/api/booking/{booking_id}")
 
 
@@ -107,7 +110,9 @@ def created_room(auth_client) -> Generator[dict[str, Any], None, None]:
 
     yield {"id": room_id, "name": data["roomName"]}
 
-    if room_id:
+    response = auth_client.get(f"/api/room/{room_id}")
+
+    if response.status_code == 200:
         auth_client.delete(f"/api/room/{room_id}")
 
 

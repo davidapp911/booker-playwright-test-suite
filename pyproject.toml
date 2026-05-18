@@ -31,6 +31,7 @@ pythonpath=["."]
 addopts = "--import-mode=importlib --screenshot=only-on-failure --tracing=retain-on-failure --html=report.html --self-contained-html"
 testpaths = ["tests"]
 markers = [
+    "focus: test that is focused on",
     "home: tests related to the home page",
     "booking: tests related to the booking page",
     "admin: tests related to the admin page",
