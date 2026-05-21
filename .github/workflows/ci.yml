@@ -25,6 +25,10 @@ jobs:
               run: pip install -e . && playwright install --with-deps
 
             - name: run tests
+              env:
+                BASE_URL: ${{ secrets.BASE_URL }}
+                ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+                ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD}}
               run: pytest --browser ${{matrix.browser}} --tracing=retain-on-failure
 
             - name: Upload test artifacts
