@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+    tests:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                browser: [chromium, firefox]
+        steps:
+            - name: checkout repository
+              uses: actions/checkout@v6
+
+            - name: python setup
+              uses: actions/setup-python@v6
+              with:
+                python-version: "3.14"
+
+            - name: dependencies setup
+              run: pip install -e . && playwright install --with-deps
+
+            - name: run tests
+              run: pytest --browser ${{matrix.browser}} --tracing=retain-on-failure
+
+            - name: Upload test artifacts
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                name: traces-${{matrix.browser}}
+                path: test-results/
