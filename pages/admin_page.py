@@ -47,6 +47,9 @@ class AdminPage(BasePage):
     def new_room_created(self, room_number: str) -> Locator:
         return self.page.get_by_text(room_number)
 
+    def open_room_by_id(self, room_id: str) -> None:
+        self.page.locator(f"#room{room_id}").click()
+
     def open_room_page(self, room_name: str) -> None:
         self.page.locator('[data-testid="roomlisting"]').filter(has=self.page.locator(f"#roomName{room_name}")).click()
 
@@ -68,3 +71,6 @@ class AdminPage(BasePage):
 
     def room_to_delete(self, room_number: str) -> Locator:
         return self.page.locator(f"#roomName{room_number}")
+
+    def booking_row(self, room_id, firstname, lastname) -> Locator:
+        return self.page.locator(f".detail.booking-{room_id}").filter(has_text=firstname).filter(has_text=lastname)

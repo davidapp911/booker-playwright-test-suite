@@ -57,3 +57,18 @@ def test_delete_room(page: Page, base_url, credentials, created_room):
     page_obj.login(**credentials)
     page_obj.delete_room(created_room["name"])
     expect(page_obj.room_to_delete(created_room["name"])).not_to_be_visible()
+
+
+@pytest.mark.admin
+def test_bookings_are_visible(page: Page, base_url, credentials, created_booking):
+    page_obj = AdminPage(page)
+    page_obj.load_admin_page(base_url)
+    page_obj.login(**credentials)
+    page_obj.open_room_by_id(created_booking["booking"]["roomid"])
+    expect(
+        page_obj.booking_row(
+            created_booking["booking"]["roomid"],
+            created_booking["booking"]["firstname"],
+            created_booking["booking"]["lastname"],
+        )
+    ).to_be_visible()

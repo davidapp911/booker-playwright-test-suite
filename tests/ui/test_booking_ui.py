@@ -71,3 +71,23 @@ def test_booking_not_reaching_server(page: Page, base_url):
     page_obj.fill_reservation_form(**booking_data)
     page_obj.click_reserve_now()
     expect(page_obj.load_error()).to_be_visible()
+
+
+@pytest.mark.booking
+def test_ui_booking_syncs_to_api(page: Page, base_url, auth_client, created_room, delete_booking_by_id, delete_message):
+    booking_data = apply_field_rules(fake_booking(), exclude=["roomid", "depositpaid", "bookingdates"])
+    delete_message(f"{booking_data['firstname']} {booking_data['lastname']}")
+    page_obj = BookingPage(page)
+    page_obj.load_room_booking(base_url, created_room["id"], **fake_booking_dates())
+    page_obj.click_reserve_now()
+    page_obj.fill_reservation_form(**booking_data)
+
+    with page.expect_response("**/api/booking") as response_info:
+        page_obj.click_reserve_now()
+
+    booking_id = response_info.value.json()["bookingid"]
+    delete_booking_by_id(booking_id)
+
+    response = auth_client.get(f"/api/booking/{booking_id}")
+
+    assert response.status_code == 200

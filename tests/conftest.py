@@ -52,17 +52,17 @@ def auth_client(base_url, credentials) -> Generator[BookerClient, None, None]:
 
 # --------> booking
 @pytest.fixture()
-def created_booking(auth_client, delete_message) -> Generator[int, None, None]:
+def created_booking(auth_client, delete_message) -> Generator[dict[str, Any], None, None]:
     booking = fake_booking()
     delete_message(f"{booking['firstname']} {booking['lastname']}")
-    booking_id = auth_client.post("/api/booking", json=booking).json()["bookingid"]
+    id = auth_client.post("/api/booking", json=booking).json()["bookingid"]
 
-    yield booking_id
+    yield {"bookingid": id, "booking": booking}
 
-    response = auth_client.get(f"/api/booking/{booking_id}")
+    response = auth_client.get(f"/api/booking/{id}")
 
     if response.status_code == 200:
-        auth_client.delete(f"/api/booking/{booking_id}")
+        auth_client.delete(f"/api/booking/{id}")
 
 
 @pytest.fixture()

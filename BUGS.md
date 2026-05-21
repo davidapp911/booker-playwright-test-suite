@@ -36,6 +36,16 @@ Discrepancies found between the Swagger docs and the actual API behaviour during
 
 ---
 
+## POST /api/message — Response does not match documentation
+
+**Docs say:** Response is the created message object including the assigned `id`.
+
+**Actual:** Response is `{"success": true}` — no message object, no ID returned.
+
+**Impact on testing:** ID-based verification after a UI contact form submission is not possible. Tests must fall back to listing all messages via `GET /api/message` and filtering by name to confirm persistence.
+
+---
+
 ## DELETE /api/room/{id} — Bookings are not cascade deleted
 
 **Expected:** Deleting a room removes all associated bookings, or the API rejects the deletion while active bookings exist.
