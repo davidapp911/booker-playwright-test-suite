@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -28,7 +30,7 @@ def test_missing_required_field(page: Page, base_url, case):
     expect(page_obj.missing_field_alert(case["expected_error"])).to_be_visible()
 
 
-@pytest.mark.contact
+@pytest.mark.focus
 def test_admin_received_message(page: Page, base_url, delete_message, auth_client):
     contact_data = fake_contact()
     delete_message(contact_data["name"])
@@ -36,9 +38,15 @@ def test_admin_received_message(page: Page, base_url, delete_message, auth_clien
     page_obj.load_contact_page(base_url)
     page_obj.fill_contact_form(**contact_data)
     page_obj.submit_contact_form()
+    expect(page_obj.success_message()).to_be_visible()
 
-    response = auth_client.get("/api/message")
-    messages = response.json()["messages"]
-    message_id = next((message["id"] for message in messages if message["name"] == contact_data["name"]), None)
+    message_id = None
+
+    for _ in range(5):
+        messages = auth_client.get("/api/message").json()["messages"]
+        message_id = next((message["id"] for message in messages if message["name"] == contact_data["name"]), None)
+        if message_id:
+            break
+        time.sleep(1)
 
     assert message_id
