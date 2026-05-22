@@ -1,0 +1,8 @@
+services:
+  tests:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./test-results:/app/test-results
+      - ./report.html:/app/report.html
